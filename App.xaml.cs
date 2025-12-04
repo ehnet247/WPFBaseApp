@@ -27,9 +27,12 @@ namespace WpfbaseApp
             ConfigureServices(serviceCollection);
 
             _serviceProvider = serviceCollection.BuildServiceProvider();
-            //ConfigureServices(serviceCollection);
+            if (_serviceProvider == null)
+                throw new Exception("Unable to retrieve services");
             var mainViewModel = _serviceProvider.GetRequiredService<IMainView>();
+            var navigationService = _serviceProvider.GetRequiredService<INavigationService>();
             var mainWindow = _serviceProvider.GetRequiredService<IMainView>();
+            navigationService.OpenMainWindow<IMainView>();
             mainWindow.Show();
         }
 
