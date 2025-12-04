@@ -1,2 +1,2 @@
 # WPFBaseApp
-WPF app template enling dependency injection
+WPF app template enabling dependency injection
