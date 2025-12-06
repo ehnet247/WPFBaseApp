@@ -4,11 +4,7 @@ using System.Text;
 
 namespace WpfBaseApp.Interfaces
 {
-    public interface IMainView
-    {
-        void Show();
-    }
-    public interface IMainViewModel : IBaseViewModel
+    public interface IBaseViewModel
     {
     }
 }

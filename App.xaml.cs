@@ -1,4 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+using Serilog;
+using System.CodeDom;
 using System.Configuration;
 using System.Data;
 using System.Windows;
@@ -36,21 +39,6 @@ namespace WpfbaseApp
             mainWindow.Show();
         }
 
-        private void ConfigureServices(IServiceCollection services)
-        {
-            // Configure Logging
-            services.AddLogging();
-
-            // Register Services
-            services.AddSingleton<INavigationService, WpfBaseApp.Services.NavigationService>();
-
-            // Register ViewModels
-            services.AddSingleton<IMainViewModel, MainViewModel>();
-
-            // Register Views
-            services.AddSingleton<IMainView, MainWindow>();
-        }
-
         protected void OnExit(object sender, ExitEventArgs e)
         {
             // Dispose of services if needed
@@ -58,6 +46,33 @@ namespace WpfbaseApp
             {
                 disposable.Dispose();
             }
+        }
+
+        private void ConfigureServices(IServiceCollection services)
+        {
+            // Configure logging
+            services.AddLogging()
+
+            // Register Services
+            .AddSingleton<INavigationService, WpfBaseApp.Services.NavigationService>()
+
+            // Register ViewModels
+            .AddSingleton<IMainViewModel, MainViewModel>()
+
+            // Register Views
+            .AddSingleton<IMainView, MainWindow>();
+
+        }
+
+        private void InitializeLogger()
+        {
+            var eventLevel = Serilog.Events.LogEventLevel.Debug;
+            Log.Logger = new LoggerConfiguration()
+                    .WriteTo.File("Logs\\log_.txt",eventLevel)
+                    .CreateLogger();
+            //Log.Logger = new LoggerConfiguration()
+            //    .ReadFrom.AppSettings()
+            //    .CreateLogger();
         }
     }
 

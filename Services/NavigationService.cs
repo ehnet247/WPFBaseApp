@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using System;
+using System.CodeDom;
 using System.Collections.Generic;
 using System.Text;
 using System.Windows;
@@ -25,27 +26,27 @@ namespace WpfBaseApp.Services
             throw new NotImplementedException();
         }
 
-        public ValueTask<NavigationResult> GoBackAsync(INavigationParameters? parameters = null, bool modal = false, bool animated = true)
+        public ValueTask<NavigationResult> GoBackAsync(bool modal = false, bool animated = true)
         {
             throw new NotImplementedException();
         }
 
-        public ValueTask<NavigationResult> GoBackToRootAsync(INavigationParameters? parameters = null, bool animated = true)
+        public ValueTask<NavigationResult> GoBackToRootAsync(bool animated = true)
         {
             throw new NotImplementedException();
         }
 
-        public ValueTask<NavigationResult> NavigateAsync(string uri, INavigationParameters? navigationParameters = null, bool modal = false, bool animated = true)
+        public ValueTask<NavigationResult> NavigateAsync(string uri, bool modal = false, bool animated = true)
         {
             throw new NotImplementedException();
         }
 
-        public ValueTask<NavigationResult> NavigateThrougFlyoutPageAsync(string stringUri, INavigationParameters? parameters = null)
+        public ValueTask<NavigationResult> NavigateThrougFlyoutPageAsync(string stringUri)
         {
             throw new NotImplementedException();
         }
 
-        public ValueTask<NavigationResult> OpenNewWindowAsync(string uri, INavigationParameters? parameters = null)
+        public ValueTask<NavigationResult> OpenNewWindowAsync(string uri)
         {
             throw new NotImplementedException();
         }
@@ -63,6 +64,7 @@ namespace WpfBaseApp.Services
 
         public void OpenMainWindow<T>()
         {
+            var type = typeof(T);
             var serviceCollection = new ServiceCollection();
             var serviceProvider = serviceCollection.BuildServiceProvider();
             var window = _serviceProvider.GetRequiredService<T>() as Window;
@@ -73,7 +75,7 @@ namespace WpfBaseApp.Services
             }
         }
 
-        public NavigationResult SelectTab(string tabName, INavigationParameters? parameters)
+        public NavigationResult SelectTab(string tabName)
         {
             throw new NotImplementedException();
         }

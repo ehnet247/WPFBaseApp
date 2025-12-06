@@ -9,16 +9,18 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using WpfBaseApp.Interfaces;
+using WpfBaseApp.Models;
 
 namespace WpfbaseApp.Views
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window, IMainView
+    public partial class MainWindow : BaseWindow, IMainView
     {
-        public MainWindow()
+        public MainWindow(IMainViewModel mainViewModel)
         {
+            SetViewModel(mainViewModel);
             InitializeComponent();
         }
     }

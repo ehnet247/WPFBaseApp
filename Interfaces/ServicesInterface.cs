@@ -14,19 +14,19 @@ namespace WpfBaseApp.Interfaces
 
         NavigationResult CloseWindow(Guid? windowId = null);
 
-        ValueTask<NavigationResult> OpenNewWindowAsync(string uri, INavigationParameters? parameters = null);
+        ValueTask<NavigationResult> OpenNewWindowAsync(string uri);
 
         NavigationResult ToggleFlyout(bool isPresented);
 
-        NavigationResult SelectTab(string tabName, INavigationParameters? parameters);
+        NavigationResult SelectTab(string tabName);
 
-        ValueTask<NavigationResult> GoBackAsync(INavigationParameters? parameters = null, bool modal = false, bool animated = true);
+        ValueTask<NavigationResult> GoBackAsync(bool modal = false, bool animated = true);
 
-        ValueTask<NavigationResult> GoBackToRootAsync(INavigationParameters? parameters = null, bool animated = true);
+        ValueTask<NavigationResult> GoBackToRootAsync(bool animated = true);
 
-        ValueTask<NavigationResult> NavigateAsync(string uri, INavigationParameters? navigationParameters = null, bool modal = false, bool animated = true);
+        ValueTask<NavigationResult> NavigateAsync(string uri, bool modal = false, bool animated = true);
 
-        ValueTask<NavigationResult> NavigateThrougFlyoutPageAsync(string stringUri, INavigationParameters? parameters = null);
+        ValueTask<NavigationResult> NavigateThrougFlyoutPageAsync(string stringUri);
         void OpenNewWindow<T>();
         void OpenMainWindow<T>();
     }
