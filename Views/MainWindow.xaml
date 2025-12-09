@@ -8,6 +8,13 @@
         mc:Ignorable="d"
         Title="{Binding Title}" Height="450" Width="800">
     <Grid>
-
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="30"/>
+        </Grid.RowDefinitions>
+        <!-- Status bar -->
+        <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Left">
+            <CheckBox Content="Dark mode" IsChecked="{Binding DarkMode}"/>
+        </StackPanel>
     </Grid>
 </models:BaseWindow>

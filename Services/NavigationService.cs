@@ -51,24 +51,22 @@ namespace WpfBaseApp.Services
             throw new NotImplementedException();
         }
 
-        public void OpenNewWindow<T>()
+        public void OpenNewWindow<T>() where T : notnull
         {
             var serviceCollection = new ServiceCollection();
-            var serviceProvider = serviceCollection.BuildServiceProvider();
-            var window = serviceProvider.GetRequiredService<T>() as Window;
-            if (window != null)
+            var service = _serviceProvider.GetRequiredService<T>();
+            if (service is Window window)
             {
                 window.Show();
             }
         }
 
-        public void OpenMainWindow<T>()
+        public void OpenAsMainWindow<T>() where T : notnull
         {
             var type = typeof(T);
             var serviceCollection = new ServiceCollection();
-            var serviceProvider = serviceCollection.BuildServiceProvider();
-            var window = _serviceProvider.GetRequiredService<T>() as Window;
-            if (window != null)
+            var service = _serviceProvider.GetRequiredService<T>();
+            if (service is Window window)
             {
                 Application.Current.MainWindow = window;
                 Application.Current.MainWindow.Show();

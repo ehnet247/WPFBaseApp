@@ -1,15 +1,15 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Serilog;
-using System.CodeDom;
 using System.Configuration;
 using System.Data;
+using System.Diagnostics;
 using System.Windows;
 using System.Windows.Navigation;
 using WpfbaseApp.Views;
 using WpfBaseApp.Interfaces;
-using WpfBaseApp.ViewModels;
 using WpfBaseApp.Services;
+using WpfBaseApp.ViewModels;
 
 namespace WpfbaseApp
 {
@@ -18,7 +18,7 @@ namespace WpfbaseApp
     /// </summary>
     public partial class App : Application
     {
-        private IServiceProvider _serviceProvider;
+        private IServiceProvider? _serviceProvider;
         public App()
         {
         }
@@ -28,14 +28,13 @@ namespace WpfbaseApp
             base.OnStartup(e);
             var serviceCollection = new ServiceCollection();
             ConfigureServices(serviceCollection);
-
             _serviceProvider = serviceCollection.BuildServiceProvider();
             if (_serviceProvider == null)
                 throw new Exception("Unable to retrieve services");
             var mainViewModel = _serviceProvider.GetRequiredService<IMainView>();
             var navigationService = _serviceProvider.GetRequiredService<INavigationService>();
             var mainWindow = _serviceProvider.GetRequiredService<IMainView>();
-            navigationService.OpenMainWindow<IMainView>();
+            navigationService.OpenAsMainWindow<IMainView>();
             mainWindow.Show();
         }
 
@@ -66,13 +65,18 @@ namespace WpfbaseApp
 
         private void InitializeLogger()
         {
-            var eventLevel = Serilog.Events.LogEventLevel.Debug;
-            Log.Logger = new LoggerConfiguration()
-                    .WriteTo.File("Logs\\log_.txt",eventLevel)
-                    .CreateLogger();
-            //Log.Logger = new LoggerConfiguration()
-            //    .ReadFrom.AppSettings()
-            //    .CreateLogger();
+            try
+            {
+                var eventLevel = Serilog.Events.LogEventLevel.Verbose;
+                Serilog.Debugging.SelfLog.Enable(msg => Debug.Assert(false, msg));
+                Log.Logger = new LoggerConfiguration()
+                        .WriteTo.File("Logs\\log_.txt", eventLevel)
+                        .CreateLogger();
+            }
+            catch (Exception ex)
+            {
+                Debug.Assert(false, ex.Message);
+            }
         }
     }
 

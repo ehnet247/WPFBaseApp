@@ -28,7 +28,7 @@ namespace WpfBaseApp.Interfaces
 
         ValueTask<NavigationResult> NavigateThrougFlyoutPageAsync(string stringUri);
         void OpenNewWindow<T>();
-        void OpenMainWindow<T>();
+        void OpenAsMainWindow<T>();
     }
     public record NavigationResult(bool Success, Exception? Exception);
 }
