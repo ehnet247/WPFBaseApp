@@ -1,5 +1,3 @@
 <Solution>
-  <Folder Name="/SampleApp/">
-    <Project Path="WpfBaseApp.csproj" />
-  </Folder>
+  <Project Path="WPFBaseApp.csproj" />
 </Solution>

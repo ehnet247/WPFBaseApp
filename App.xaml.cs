@@ -1,83 +1,91 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using Serilog;
-using System.Configuration;
-using System.Data;
-using System.Diagnostics;
-using System.Windows;
-using System.Windows.Navigation;
-using WpfbaseApp.Views;
-using WpfBaseApp.Interfaces;
-using WpfBaseApp.Services;
-using WpfBaseApp.ViewModels;
+﻿using System.IO;
+using System.Reflection;
+using System.Windows.Threading;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using Wpf.Ui;
+using Wpf.Ui.DependencyInjection;
+using WPFBaseApp.Services;
+using WPFBaseApp.ViewModels.Pages;
+using WPFBaseApp.ViewModels.Windows;
+using WPFBaseApp.Views.Pages;
+using WPFBaseApp.Views.Windows;
 
-namespace WpfbaseApp
+namespace WPFBaseApp
 {
     /// <summary>
     /// Interaction logic for App.xaml
     /// </summary>
-    public partial class App : Application
+    public partial class App
     {
-        private IServiceProvider? _serviceProvider;
-        public App()
-        {
-        }
-
-        protected override void OnStartup(StartupEventArgs e)
-        {
-            base.OnStartup(e);
-            var serviceCollection = new ServiceCollection();
-            ConfigureServices(serviceCollection);
-            _serviceProvider = serviceCollection.BuildServiceProvider();
-            if (_serviceProvider == null)
-                throw new Exception("Unable to retrieve services");
-            var mainViewModel = _serviceProvider.GetRequiredService<IMainView>();
-            var navigationService = _serviceProvider.GetRequiredService<INavigationService>();
-            var mainWindow = _serviceProvider.GetRequiredService<IMainView>();
-            navigationService.OpenAsMainWindow<IMainView>();
-            mainWindow.Show();
-        }
-
-        protected void OnExit(object sender, ExitEventArgs e)
-        {
-            // Dispose of services if needed
-            if (_serviceProvider is IDisposable disposable)
+        // The.NET Generic Host provides dependency injection, configuration, logging, and other services.
+        // https://docs.microsoft.com/dotnet/core/extensions/generic-host
+        // https://docs.microsoft.com/dotnet/core/extensions/dependency-injection
+        // https://docs.microsoft.com/dotnet/core/extensions/configuration
+        // https://docs.microsoft.com/dotnet/core/extensions/logging
+        private static readonly IHost _host = Host
+            .CreateDefaultBuilder()
+            .ConfigureAppConfiguration(c => { c.SetBasePath(Path.GetDirectoryName(AppContext.BaseDirectory)); })
+            .ConfigureServices((context, services) =>
             {
-                disposable.Dispose();
-            }
+                services.AddNavigationViewPageProvider();
+
+                services.AddHostedService<ApplicationHostService>();
+
+                // Theme manipulation
+                services.AddSingleton<IThemeService, ThemeService>();
+
+                // TaskBar manipulation
+                services.AddSingleton<ITaskBarService, TaskBarService>();
+
+                // Service containing navigation, same as INavigationWindow... but without window
+                services.AddSingleton<INavigationService, NavigationService>();
+
+                // Main window with navigation
+                services.AddSingleton<INavigationWindow, MainWindow>();
+                services.AddSingleton<MainWindowViewModel>();
+
+                services.AddSingleton<DashboardPage>();
+                services.AddSingleton<DashboardViewModel>();
+                services.AddSingleton<DataPage>();
+                services.AddSingleton<DataViewModel>();
+                services.AddSingleton<SettingsPage>();
+                services.AddSingleton<SettingsViewModel>();
+            }).Build();
+
+        /// <summary>
+        /// Gets services.
+        /// </summary>
+        public static IServiceProvider Services
+        {
+            get { return _host.Services; }
         }
 
-        private void ConfigureServices(IServiceCollection services)
+        /// <summary>
+        /// Occurs when the application is loading.
+        /// </summary>
+        private async void OnStartup(object sender, StartupEventArgs e)
         {
-            // Configure logging
-            services.AddLogging()
-
-            // Register Services
-            .AddSingleton<INavigationService, WpfBaseApp.Services.NavigationService>()
-
-            // Register ViewModels
-            .AddSingleton<IMainViewModel, MainViewModel>()
-
-            // Register Views
-            .AddSingleton<IMainView, MainWindow>();
-
+            await _host.StartAsync();
         }
 
-        private void InitializeLogger()
+        /// <summary>
+        /// Occurs when the application is closing.
+        /// </summary>
+        private async void OnExit(object sender, ExitEventArgs e)
         {
-            try
-            {
-                var eventLevel = Serilog.Events.LogEventLevel.Verbose;
-                Serilog.Debugging.SelfLog.Enable(msg => Debug.Assert(false, msg));
-                Log.Logger = new LoggerConfiguration()
-                        .WriteTo.File("Logs\\log_.txt", eventLevel)
-                        .CreateLogger();
-            }
-            catch (Exception ex)
-            {
-                Debug.Assert(false, ex.Message);
-            }
+            await _host.StopAsync();
+
+            _host.Dispose();
+        }
+
+        /// <summary>
+        /// Occurs when an exception is thrown by an application but not handled.
+        /// </summary>
+        private void OnDispatcherUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)
+        {
+            // For more info see https://docs.microsoft.com/en-us/dotnet/api/system.windows.application.dispatcherunhandledexception?view=windowsdesktop-6.0
         }
     }
-
 }
