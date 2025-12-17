@@ -26,7 +26,7 @@ namespace WPFBaseApp.ViewModels.Pages
         private void InitializeViewModel()
         {
             CurrentTheme = ApplicationThemeManager.GetAppTheme();
-            AppVersion = $"UiDesktopApp1 - {GetAssemblyVersion()}";
+            AppVersion = $"WpfBaseApp - {GetAssemblyVersion()}";
 
             _isInitialized = true;
         }
