@@ -21,6 +21,10 @@
     WindowCornerPreference="Round"
     WindowStartupLocation="CenterScreen"
     mc:Ignorable="d">
+    <ui:FluentWindow.Resources>
+        <SolidColorBrush x:Key="NavigationViewSelectionIndicatorForeground" Color="DeepSkyBlue" />
+        <SolidColorBrush x:Key="NavigationViewItemBorderBrush" Color="DeepSkyBlue" />
+    </ui:FluentWindow.Resources>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
